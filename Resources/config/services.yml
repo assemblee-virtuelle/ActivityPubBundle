@@ -1,0 +1,79 @@
+services:
+
+  activity_pub.service:
+    class: AV\ActivityPubBundle\Service\ActivityPubService
+    public: true
+    arguments:
+      - '@request_stack'
+      - '@doctrine.orm.entity_manager'
+      - '@security.authorization_checker'
+      - '@activity_pub.parser'
+      - '@event_dispatcher'
+
+  AV\ActivityPubBundle\Service\ActivityPubService:
+    alias: activity_pub.service
+
+  activity_pub.parser:
+    class: AV\ActivityPubBundle\Service\ActivityStreamsParser
+    public: true
+    arguments:
+      - '@doctrine.orm.entity_manager'
+
+  activity_pub.serializer.activity.small:
+    class: AV\ActivityPubBundle\Serializer\ActivitySerializer
+    public: true
+    arguments:
+      - 'small'
+      - '@activity_pub.service'
+      - '@activity_pub.serializer.object.medium'
+
+  activity_pub.serializer.activity.medium:
+    class: AV\ActivityPubBundle\Serializer\ActivitySerializer
+    public: true
+    arguments:
+      - 'medium'
+      - '@activity_pub.service'
+      - '@activity_pub.serializer.object.medium'
+
+  activity_pub.serializer.actor.medium:
+    class: AV\ActivityPubBundle\Serializer\ActorSerializer
+    public: true
+    arguments:
+      - 'medium'
+      - '@activity_pub.service'
+      - '@activity_pub.serializer.object.medium'
+
+  activity_pub.serializer.actor.full:
+    class: AV\ActivityPubBundle\Serializer\ActorSerializer
+    public: true
+    arguments:
+      - 'full'
+      - '@activity_pub.service'
+      - '@activity_pub.serializer.object.medium'
+
+  activity_pub.serializer.collection:
+    class: AV\ActivityPubBundle\Serializer\CollectionSerializer
+    public: true
+    arguments:
+      - '@activity_pub.service'
+      - '@activity_pub.serializer.activity.medium'
+      - '@activity_pub.serializer.object.medium'
+
+  activity_pub.serializer.object.medium:
+    class: AV\ActivityPubBundle\Serializer\ObjectSerializer
+    public: true
+    arguments:
+      - 'medium'
+      - '@activity_pub.service'
+
+  activity_pub.activity.voter:
+    class: AV\ActivityPubBundle\Security\ActivityVoter
+    tags: ['security.voter']
+
+  activity_pub.listener.exception_listener:
+    class: AV\ActivityPubBundle\EventListener\ExceptionListener
+    tags:
+      - { name: kernel.event_listener, event: kernel.exception, priority: 255 }
+    arguments:
+      - "%kernel.environment%"
+      - "@logger"
