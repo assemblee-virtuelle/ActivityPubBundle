@@ -31,7 +31,7 @@ class ActivityStreamsParser
                 $this->parseActivity($activity, $data);
                 return $activity;
             } elseif ( ObjectType::includes($data['type']) ) {
-                $object = $this->findOrCreate(array_key_exists('id', $data) ? $data['id'] : null,$data['type'] === ObjectType::PLACE ? new Place() : new BaseObject());
+                $object = $this->findOrCreate(array_key_exists('id', $data) ? $data['id'] : null,$data['type'] === ObjectType::PLACE ? Place::class : BaseObject::class);
                 $this->parseObject($object, $data);
                 return $object;
             } elseif ( ActorType::includes($data['type']) ) {
