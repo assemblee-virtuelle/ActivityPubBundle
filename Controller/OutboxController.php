@@ -2,6 +2,7 @@
 
 namespace AV\ActivityPubBundle\Controller;
 
+use AV\ActivityPubBundle\DbType\ActivityType;
 use AV\ActivityPubBundle\Entity\Activity;
 use AV\ActivityPubBundle\Entity\Actor;
 use AV\ActivityPubBundle\Entity\OrderedCollection;
@@ -39,7 +40,25 @@ class OutboxController extends BaseController
 
         $activity = $activityPubService->handleActivity($json, $actor);
 
-        return new Response(null, Response::HTTP_CREATED, ['Location' => $activityPubService->getObjectUri($activity)]);
+        switch($activity->getType())
+        {
+            case ActivityType::CREATE:
+                $status = Response::HTTP_CREATED;
+                break;
+
+            case ActivityType::DELETE:
+                $status = Response::HTTP_GONE;
+                break;
+
+            default:
+                $status = Response::HTTP_OK;
+        }
+
+        return new Response(
+            null,
+            $status,
+            ['Location' => $activityPubService->getObjectUri($activity)]
+        );
     }
 
     /**
