@@ -22,8 +22,7 @@ class BaseObject
 {
     /**
      * @ORM\Id
-     * @ORM\Column(name="id", type="guid")
-     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\Column(type="string", length=48, unique=true)
      */
     protected $id;
 
@@ -95,6 +94,7 @@ class BaseObject
 
     public function __construct()
     {
+        $this->id = \uniqid();
         $this->activities = new ArrayCollection();
         $this->tags = new ArrayCollection();
     }
@@ -114,6 +114,12 @@ class BaseObject
     public function getId() : ?string
     {
         return $this->id;
+    }
+
+    public function setId(?string $id)
+    {
+        $this->id = $id;
+        return $this;
     }
 
     public function getType() : string

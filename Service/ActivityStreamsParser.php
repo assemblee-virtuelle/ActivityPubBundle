@@ -31,7 +31,20 @@ class ActivityStreamsParser
                 $this->parseActivity($activity, $data);
                 return $activity;
             } elseif ( ObjectType::includes($data['type']) ) {
-                $object = $data['type'] === ObjectType::PLACE ? new Place() : new BaseObject();
+                $object = null;
+                // If a ID is defined, try to get an existing object
+                if( $data['id'] ) {
+                    $object = $this->getObjectFromUri($data['id']);
+                    if( !$object ) $object = $this->em->getRepository(BaseObject::class)->find($data['id']);
+                }
+                if( $object ) {
+                    // If object exists, unset the ID and type as we don't want it to change
+                    unset( $data['id'] );
+                    unset( $data['type'] );
+                } else {
+                    // No object found, create a new one
+                    $object = $data['type'] === ObjectType::PLACE ? new Place() : new BaseObject();
+                }
                 $this->parseObject($object, $data);
                 return $object;
             } elseif ( ActorType::includes($data['type']) ) {

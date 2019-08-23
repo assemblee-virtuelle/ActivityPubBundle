@@ -39,6 +39,7 @@ class ActivitySerializer extends BaseSerializer
             "@context" => "https://www.w3.org/ns/activitystreams",
             "id" => $activityUri,
             "type" => $activity->getType(),
+            "summary" => $activity->getSummary(),
             "actor" => $activity->getActor() ? $this->activityPubService->getObjectUri($activity->getActor()) : null,
             "object" => $activity->getObject() ? $this->activityPubService->getObjectUri($activity->getObject()) : null
         ];

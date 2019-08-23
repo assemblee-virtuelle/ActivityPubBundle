@@ -36,7 +36,7 @@ class ActivityPubService
     {
         $this->em = $em;
         $this->authorizationChecker = $authorizationChecker;
-        $this->serverBaseUrl = $requestStack->getCurrentRequest()->getSchemeAndHttpHost();
+        $this->serverBaseUrl = $requestStack->getCurrentRequest() ? $requestStack->getCurrentRequest()->getSchemeAndHttpHost() : "http://localhost";
         $this->parser = $parser;
         $this->dispatcher = $dispatcher;
     }
@@ -84,6 +84,10 @@ class ActivityPubService
         {
             case ActivityType::CREATE:
                 $this->handleCreate($activity, $json['object']);
+                break;
+
+            case ActivityType::UPDATE:
+                $this->handleUpdate($activity, $json['object']);
                 break;
 
             case ActivityType::FOLLOW:
@@ -134,7 +138,12 @@ class ActivityPubService
         }
 
         // TODO put this in an event listener
-        $activity->setSummary('Nouvelle actualité postée par ' . $activity->getActor()->getName());
+        $activity->setSummary('Nouvel objet posté par ' . $activity->getActor()->getName());
+    }
+
+    protected function handleUpdate(Activity $activity, array $objectJson)
+    {
+        $activity->setSummary('Objet mise à jour par ' . $activity->getActor()->getName());
     }
 
     protected function handleFollow(Activity $activity, string $objectJson)

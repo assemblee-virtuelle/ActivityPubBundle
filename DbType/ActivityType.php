@@ -12,5 +12,9 @@ class ActivityType extends EnumType
 
     public const FOLLOW = 'Follow';
 
+    public const UPDATE = 'Update';
+
+    public const DELETE = 'Delete';
+
     public const UNDO = 'Undo';
 }
