@@ -31,12 +31,12 @@ class ActivityStreamsParser
                 $this->parseActivity($activity, $data);
                 return $activity;
             } elseif ( ObjectType::includes($data['type']) ) {
-                $object = $this->findOrCreate($data['id'],$data['type'] === ObjectType::PLACE ? new Place() : new BaseObject());
+                $object = $this->findOrCreate(array_key_exists('id', $data) ? $data['id'] : null,$data['type'] === ObjectType::PLACE ? new Place() : new BaseObject());
                 $this->parseObject($object, $data);
                 return $object;
             } elseif ( ActorType::includes($data['type']) ) {
                 /** @var Actor $actor */
-                $actor = $this->findOrCreate($data['id'],Actor::class);
+                $actor = $this->findOrCreate(array_key_exists('id', $data) ? $data['id'] : null,Actor::class);
                 $this->parseActor($actor, $data);
                 return $actor;
             } else {
