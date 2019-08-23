@@ -65,6 +65,18 @@ class Actor extends BaseObject
         $this->controllingActors = new ArrayCollection();
     }
 
+    public function delete()
+    {
+        parent::delete();
+
+        $this->setUsername(null);
+        $this->followers = [];
+        $this->following = [];
+        $this->outboxActivities = [];
+        $this->inboxActivities = [];
+        $this->controllingActors = [];
+    }
+
     public function getUsername() : string
     {
         return $this->username;

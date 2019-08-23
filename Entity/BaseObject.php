@@ -2,6 +2,7 @@
 
 namespace AV\ActivityPubBundle\Entity;
 
+use AV\ActivityPubBundle\DbType\ObjectType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -104,6 +105,23 @@ class BaseObject
         return "Object " . $this->getType() . " #" . $this->getId();
     }
 
+    public function delete()
+    {
+        $this->setType(ObjectType::TOMBSTONE)
+            ->setAttachment(null)
+            ->setContent(null)
+            ->setImage(null)
+            ->setLocation(null)
+            ->setName(null)
+            ->setPublished(null)
+            ->setSummary(null)
+            ->setUpdated(null)
+            ->setUrl(null);
+
+        $this->activities = [];
+        $this->tags = [];
+    }
+
     public function set(string $name, $value)
     {
         $this->{$name} = $value;
@@ -118,7 +136,13 @@ class BaseObject
 
     public function setId(?string $id)
     {
-        $this->id = $id;
+        // If we received an URI, extract the ID
+        preg_match('/\/(actor|object|activity)\/([^\/]*)/', $id, $matches );
+        if( !$matches ) {
+            $this->id = $id;
+        } else {
+            $this->id = $matches[2];
+        }
         return $this;
     }
 

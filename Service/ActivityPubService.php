@@ -90,6 +90,10 @@ class ActivityPubService
                 $this->handleUpdate($activity, $json['object']);
                 break;
 
+            case ActivityType::DELETE:
+                $this->handleDelete($activity, $json['object']);
+                break;
+
             case ActivityType::FOLLOW:
                 $this->handleFollow($activity, $json['object']);
                 break;
@@ -144,6 +148,13 @@ class ActivityPubService
     protected function handleUpdate(Activity $activity, array $objectJson)
     {
         $activity->setSummary('Objet mise à jour par ' . $activity->getActor()->getName());
+    }
+
+    protected function handleDelete(Activity $activity, string $objectJson)
+    {
+        $activity->getObject()->delete();
+
+        $activity->setSummary('Objet effacé par ' . $activity->getActor()->getName());
     }
 
     protected function handleFollow(Activity $activity, string $objectJson)

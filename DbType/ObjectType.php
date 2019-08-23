@@ -12,6 +12,8 @@ class ObjectType extends EnumType
 
     public const PLACE = 'Place';
 
+    public const TOMBSTONE = 'Tombstone';
+
     // TODO put this in a PairActorType extension
 
     public const TOPIC = 'Topic';

@@ -31,24 +31,12 @@ class ActivityStreamsParser
                 $this->parseActivity($activity, $data);
                 return $activity;
             } elseif ( ObjectType::includes($data['type']) ) {
-                $object = null;
-                // If a ID is defined, try to get an existing object
-                if( $data['id'] ) {
-                    $object = $this->getObjectFromUri($data['id']);
-                    if( !$object ) $object = $this->em->getRepository(BaseObject::class)->find($data['id']);
-                }
-                if( $object ) {
-                    // If object exists, unset the ID and type as we don't want it to change
-                    unset( $data['id'] );
-                    unset( $data['type'] );
-                } else {
-                    // No object found, create a new one
-                    $object = $data['type'] === ObjectType::PLACE ? new Place() : new BaseObject();
-                }
+                $object = $this->findOrCreate($data['id'],$data['type'] === ObjectType::PLACE ? new Place() : new BaseObject());
                 $this->parseObject($object, $data);
                 return $object;
             } elseif ( ActorType::includes($data['type']) ) {
-                $actor = new Actor();
+                /** @var Actor $actor */
+                $actor = $this->findOrCreate($data['id'],Actor::class);
                 $this->parseActor($actor, $data);
                 return $actor;
             } else {
@@ -167,5 +155,23 @@ class ActivityStreamsParser
             default:
                 return null;
         }
+    }
+
+    protected function findOrCreate($id, $className) : ?BaseObject
+    {
+        $object = null;
+
+        // If a ID is defined, try to get an existing object
+        if( $id ) {
+            $object = $this->getObjectFromUri($id);
+            if( !$object ) $object = $this->em->getRepository($className)->find($id);
+        }
+
+        if( !$object ) {
+            /** @var BaseObject $object */
+            $object = new $className;
+        }
+
+        return $object;
     }
 }
