@@ -62,6 +62,7 @@ class ActivityPubService
         /** @var Activity $activity */
         $activity = $this->parser->parse($json);
 
+        // Set sender
         if( array_key_exists('actor', $json) ) {
             $postingActor = $this->getObjectFromUri($json['actor']);
             if( !$postingActor ) throw new BadRequestHttpException('Unknown actor : ' . $json['actor']);
@@ -74,6 +75,26 @@ class ActivityPubService
             }
         } else {
             $activity->setActor($loggedActor);
+        }
+
+        // Set recipients
+        if( array_key_exists('to', $json) ) {
+            foreach( $json['to'] as $actorUri ) {
+                if( $actorUri === ActivityPubService::PUBLIC_POST_URI ) {
+                    $activity->setIsPublic(true);
+                } elseif ( $followers = $this->getFollowersFromUri($actorUri) ) {
+                    foreach( $followers as $follower ) {
+                        $activity->addReceivingActor($follower);
+                    }
+                } elseif ( $actor = $this->getObjectFromUri($actorUri) ) {
+                    $activity->addReceivingActor($actor);
+                } else {
+                    throw new BadRequestHttpException("Unknown actor URI : $actorUri");
+                }
+            }
+        } else {
+            // TODO see what ActivityPub standards say
+            $activity->setIsPublic(true);
         }
 
         //////////////////
@@ -120,25 +141,6 @@ class ActivityPubService
             if( !in_array($activity->getObject()->getType(), Actor::CONTROLLABLE_ACTORS) )
                 throw new BadRequestHttpException("This type of actor cannot be created");
             $activity->getObject()->addControllingActor($activity->getActor());
-        }
-
-        $activity->setIsPublic(true);
-
-        // Forward activity
-        if( isset($objectJson['to']) ) {
-            foreach( $objectJson['to'] as $actorUri ) {
-                if( $actorUri === ActivityPubService::PUBLIC_POST_URI ) {
-                    $activity->setIsPublic(true);
-                } elseif ( $followers = $this->getFollowersFromUri($actorUri) ) {
-                    foreach( $followers as $follower ) {
-                        $activity->addReceivingActor($follower);
-                    }
-                } elseif ( $actor = $this->getObjectFromUri($actorUri) ) {
-                    $activity->addReceivingActor($actor);
-                } else {
-                    throw new BadRequestHttpException("Unknown actor URI : $actorUri");
-                }
-            }
         }
 
         // TODO put this in an event listener
