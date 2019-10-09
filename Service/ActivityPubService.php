@@ -63,7 +63,7 @@ class ActivityPubService
         $activity = $this->parser->parse($json);
 
         // Set sender
-        if( array_key_exists('actor', $json) ) {
+        if( array_key_exists('actor', $json) && $json['actor'] ) {
             $postingActor = $this->getObjectFromUri($json['actor']);
             if( !$postingActor ) throw new BadRequestHttpException('Unknown actor : ' . $json['actor']);
             $activity->setActor($postingActor);
@@ -78,7 +78,7 @@ class ActivityPubService
         }
 
         // Set recipients
-        if( array_key_exists('to', $json) ) {
+        if( array_key_exists('to', $json) && $json['to'] ) {
             foreach( $json['to'] as $actorUri ) {
                 if( $actorUri === ActivityPubService::PUBLIC_POST_URI ) {
                     $activity->setIsPublic(true);
