@@ -12,7 +12,7 @@ use AV\ActivityPubBundle\Event\ActivityEvent;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
+use Monolog\Logger;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -35,7 +35,7 @@ class ActivityPubService
 
     public const PUBLIC_POST_URI = 'https://www.w3.org/ns/activitystreams#Public';
 
-    public function __construct(RequestStack $requestStack, EntityManagerInterface $em, AuthorizationCheckerInterface $authorizationChecker, ActivityStreamsParser $parser, EventDispatcherInterface $dispatcher, LoggerInterface $logger)
+    public function __construct(RequestStack $requestStack, EntityManagerInterface $em, AuthorizationCheckerInterface $authorizationChecker, ActivityStreamsParser $parser, EventDispatcherInterface $dispatcher, Logger $logger)
     {
         $this->em = $em;
         $this->authorizationChecker = $authorizationChecker;

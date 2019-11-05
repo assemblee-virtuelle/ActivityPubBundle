@@ -10,6 +10,7 @@ use AV\ActivityPubBundle\Repository\ActivityRepository;
 use AV\ActivityPubBundle\Serializer\CollectionSerializer;
 use AV\ActivityPubBundle\Serializer\Serializable;
 use AV\ActivityPubBundle\Service\ActivityPubService;
+use Monolog\Logger;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -22,8 +23,11 @@ class OutboxController extends BaseController
     /**
      * @Route("/actor/{username}/outbox", name="av_activitypub_post_actor_outbox", methods={"POST"})
      */
-    public function postActivity(string $username, Request $request)
+    public function postActivity(string $username, Request $request, Logger $logger)
     {
+        $logger->info('test');
+        $logger->warning('test');
+
         /** @var ActivityPubService $activityPubService */
         $activityPubService = $this->container->get('activity_pub.service');
 

@@ -10,7 +10,7 @@ use AV\ActivityPubBundle\Entity\Actor;
 use AV\ActivityPubBundle\Entity\BaseObject;
 use AV\ActivityPubBundle\Entity\Place;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
+use Monolog\Logger;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ActivityStreamsParser
@@ -19,7 +19,7 @@ class ActivityStreamsParser
 
     protected $logger;
 
-    public function __construct(EntityManagerInterface $em, LoggerInterface $logger)
+    public function __construct(EntityManagerInterface $em, Logger $logger)
     {
         $this->em = $em;
         $this->logger = $logger;
