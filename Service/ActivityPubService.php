@@ -185,14 +185,14 @@ class ActivityPubService
             case ActivityType::FOLLOW:
                 $actorToUnfollow = $activityToUndo->getActor();
                 $actorToUnfollow->removeFollower($activity->getActor());
+                $this->em->persist($actorToUnfollow);
+                // TODO put this in an event listener
+                $activity->setSummary($activity->getActor()->getName() . ' ne suit plus '  . $actorToUnfollow->getName());
                 break;
 
             default:
                 throw new BadRequestHttpException("We cannot undo this type of activity : " . $activityToUndo->getType());
         }
-
-        // TODO put this in an event listener
-        $activity->setSummary($activity->getActor()->getName() . ' ne suit plus '  . $activityToUndo->getActor()->getName());
     }
 
     public function getObjectFromUri(string $uri) : ?BaseObject
