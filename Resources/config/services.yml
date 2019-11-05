@@ -9,6 +9,7 @@ services:
       - '@security.authorization_checker'
       - '@activity_pub.parser'
       - '@event_dispatcher'
+      - '@logger'
 
   AV\ActivityPubBundle\Service\ActivityPubService:
     alias: activity_pub.service
