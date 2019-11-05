@@ -18,6 +18,7 @@ services:
     public: true
     arguments:
       - '@doctrine.orm.entity_manager'
+      - '@logger'
 
   activity_pub.serializer.activity.small:
     class: AV\ActivityPubBundle\Serializer\ActivitySerializer
