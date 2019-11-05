@@ -27,6 +27,8 @@ class ActivityStreamsParser
 
     public function parse($data) : ?BaseObject
     {
+        $this->logger->debug('parse', $data);
+
         if( is_string($data) ) {
             return $this->getObjectFromUri($data);
         } else if( is_array($data) ) {
