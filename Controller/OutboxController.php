@@ -73,6 +73,8 @@ class OutboxController extends BaseController
      */
     public function readOutbox(string $username)
     {
+        return $this->json(['bye' => 'bye']);
+
         $em = $this->getDoctrine()->getManager();
         /** @var ActivityPubService $activityPubService */
         $activityPubService = $this->container->get('activity_pub.service');
