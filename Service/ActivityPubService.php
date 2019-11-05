@@ -183,7 +183,7 @@ class ActivityPubService
 
         switch($activityToUndo->getType()) {
             case ActivityType::FOLLOW:
-                $actorToUnfollow = $activityToUndo->getActor();
+                $actorToUnfollow = $activityToUndo->getObject();
                 $actorToUnfollow->removeFollower($activity->getActor());
                 $this->em->persist($actorToUnfollow);
                 // TODO put this in an event listener
