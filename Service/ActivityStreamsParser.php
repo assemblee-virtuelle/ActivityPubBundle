@@ -27,11 +27,10 @@ class ActivityStreamsParser
 
     public function parse($data) : ?BaseObject
     {
-        $this->logger->info('parse', $data);
-
         if( is_string($data) ) {
             return $this->getObjectFromUri($data);
         } else if( is_array($data) ) {
+            $this->logger->info('parse', $data);
             if( ActivityType::includes($data['type']) ) {
                 $activity = new Activity();
                 $this->parseActivity($activity, $data);
@@ -60,7 +59,7 @@ class ActivityStreamsParser
         if( array_key_exists('object', $json) ) {
             $object = $this->parse($json['object']);
             $activity->setObject($object);
-            $this->logger->info('parseActivity object', $json['object']);
+            $this->logger->info('parseActivity object', $json);
         }
     }
 
