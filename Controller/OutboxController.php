@@ -34,6 +34,9 @@ class OutboxController extends BaseController
         $actor = $this->getLoggedActor();
         $json = $this->parseBodyAsJson($request);
 
+        var_dump($json);
+        exit();
+
         if( $actor->getUsername() !== $username ) {
             throw new AccessDeniedHttpException("You are not allowed to post to someone else's outbox");
         }
