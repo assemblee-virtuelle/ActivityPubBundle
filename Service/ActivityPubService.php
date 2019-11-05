@@ -123,6 +123,10 @@ class ActivityPubService
                 $this->handleFollow($activity, $json['object']);
                 break;
 
+            case ActivityType::UNDO:
+                $this->handleUndo($activity, $json['object']);
+                break;
+
             default:
                 throw new BadRequestHttpException("Unhandled activity : $activityType");
         }
@@ -170,6 +174,25 @@ class ActivityPubService
 
         // TODO put this in an event listener
         $activity->setSummary($activity->getActor()->getName() . ' suit maintenant '  . $actorToFollow->getName());
+    }
+
+    protected function handleUndo(Activity $activity, string $objectJson)
+    {
+        /** @var Activity $activityToUndo */
+        $activityToUndo = $this->getObjectFromUri($objectJson);
+
+        switch($activityToUndo->getType()) {
+            case ActivityType::FOLLOW:
+                $actorToUnfollow = $activityToUndo->getActor();
+                $actorToUnfollow->removeFollower($activity->getActor());
+                break;
+
+            default:
+                throw new BadRequestHttpException("We cannot undo this type of activity : " . $activityToUndo->getType());
+        }
+
+        // TODO put this in an event listener
+        $activity->setSummary($activity->getActor()->getName() . ' ne suit plus '  . $activityToUndo->getActor()->getName());
     }
 
     public function getObjectFromUri(string $uri) : ?BaseObject
