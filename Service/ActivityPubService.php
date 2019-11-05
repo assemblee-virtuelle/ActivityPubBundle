@@ -61,8 +61,6 @@ class ActivityPubService
             ];
         }
 
-        $this->logger->info('handleActivity json', $json);
-
         $activityType = $json['type'];
 
         /** @var Activity $activity */
