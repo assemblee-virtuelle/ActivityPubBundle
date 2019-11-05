@@ -10,15 +10,19 @@ use AV\ActivityPubBundle\Entity\Actor;
 use AV\ActivityPubBundle\Entity\BaseObject;
 use AV\ActivityPubBundle\Entity\Place;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ActivityStreamsParser
 {
     protected $em;
 
-    public function __construct(EntityManagerInterface $em)
+    protected $logger;
+
+    public function __construct(EntityManagerInterface $em, LoggerInterface $logger)
     {
         $this->em = $em;
+        $this->logger = $logger;
     }
 
     public function parse($data) : ?BaseObject
@@ -54,6 +58,7 @@ class ActivityStreamsParser
         if( array_key_exists('object', $json) ) {
             $object = $this->parse($json['object']);
             $activity->setObject($object);
+            $this->logger->debug('parseActivity object', $json['object']);
         }
     }
 

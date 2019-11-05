@@ -163,7 +163,6 @@ class ActivityPubService
     {
         $actorToFollow = $this->getObjectFromUri($objectJson);
         $actorToFollow->addFollower($activity->getActor());
-        $activity->setObject($actorToFollow);
 
         // TODO put this in an event listener
         $activity->setSummary($activity->getActor()->getName() . ' suit maintenant '  . $actorToFollow->getName());
