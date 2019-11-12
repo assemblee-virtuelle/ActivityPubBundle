@@ -22,7 +22,8 @@ class ObjectRepository extends EntityRepository
                 'activityType' => ActivityType::CREATE,
                 'tombstone' => ObjectType::TOMBSTONE
             ])
-            ->orderBy('object.updated DESC, object.created DESC')
+            ->addOrderBy('object.updated', 'DESC')
+            ->addOrderBy('object.published', 'DESC')
             ->getQuery()
             ->getResult();
 
