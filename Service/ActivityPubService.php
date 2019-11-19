@@ -218,9 +218,9 @@ class ActivityPubService
         }
     }
 
-    public function getFollowersFromUri(string $uri) : Collection
+    public function getFollowersFromUri(string $uri) : ?Collection
     {
-        preg_match('/\/actor\/(\w*)\/followers/', $uri, $matches );
+        preg_match('/\/actor\/([\w-_]*)\/followers/', $uri, $matches );
         if( !$matches ) return null;
         /** @var Actor $actor */
         $actor = $this->em->getRepository(Actor::class)

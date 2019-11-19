@@ -20,7 +20,7 @@ class ObjectController extends BaseController
         /** @var ObjectSerializer $objectSerializer */
         $objectSerializer = $this->container->get('activity_pub.serializer.object.medium');
 
-        /** @var Actor $actor */
+        /** @var BaseObject $object */
         $object = $em->getRepository(BaseObject::class)->findOneBy(['id' => $id]);
         if( !$object ) throw new NotFoundHttpException();
 
