@@ -81,7 +81,7 @@ class BaseObject
     protected $location;
 
     /**
-     * @ORM\ManyToMany(targetEntity="BaseObject", cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="BaseObject", cascade={"persist"}, fetch="EAGER")
      * @ORM\JoinTable(
      *     name="tag",
      *     joinColumns={@ORM\JoinColumn(name="tagged_object_id", referencedColumnName="id")},
