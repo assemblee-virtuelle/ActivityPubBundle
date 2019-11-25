@@ -21,9 +21,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class BaseObject
 {
+    public const ID_MAX_LENGTH = 36;
+
     /**
      * @ORM\Id
-     * @ORM\Column(type="string", length=48, unique=true)
+     * @ORM\Column(type="string", length=36, unique=true)
      */
     protected $id;
 

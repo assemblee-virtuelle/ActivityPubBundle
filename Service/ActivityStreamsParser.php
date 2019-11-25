@@ -143,18 +143,21 @@ class ActivityStreamsParser
         preg_match('/\/(actor|object|activity)\/([^\/]*)/', $uri, $matches );
         if( !$matches ) return null;
 
-        switch($matches[1]) {
+        $objectType = $matches[1];
+        $objectId = substr( $matches[2], 0, BaseObject::ID_MAX_LENGTH );
+
+        switch($objectType) {
             case "object":
                 return $this->em->getRepository(BaseObject::class)
-                    ->findOneBy(['id' => $matches[2]]);
+                    ->findOneBy(['id' => $objectId]);
 
             case "actor":
                 return $this->em->getRepository(Actor::class)
-                    ->findOneBy(['username' => $matches[2]]);
+                    ->findOneBy(['username' => $objectId]);
 
             case "activity":
                 return $this->em->getRepository(Activity::class)
-                    ->findOneBy(['id' => $matches[2]]);
+                    ->findOneBy(['id' => $objectId]);
 
             default:
                 return null;
@@ -168,7 +171,7 @@ class ActivityStreamsParser
         // If a ID is defined, try to get an existing object
         if( $id ) {
             $object = $this->getObjectFromUri($id);
-            if( !$object ) $object = $this->em->getRepository($className)->find($id);
+            if( !$object ) $object = $this->em->getRepository($className)->find(substr( $id, 0, BaseObject::ID_MAX_LENGTH ));
         }
 
         if( !$object ) {
