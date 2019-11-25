@@ -76,7 +76,7 @@ class BaseObject
     protected $updated;
 
     /**
-     * @ORM\OneToOne(targetEntity="Place", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="Place", cascade={"persist", "remove"}, orphanRemoval="true")
      */
     protected $location;
 
@@ -91,7 +91,7 @@ class BaseObject
     protected $tags;
 
     /**
-     * @ORM\OneToOne(targetEntity="BaseObject", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="BaseObject", cascade={"persist", "remove"}, orphanRemoval="true")
      */
     protected $attachment;
 
